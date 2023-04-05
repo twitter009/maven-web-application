@@ -94,13 +94,13 @@
 	<distributionManagement>
 	    <repository>
 	      <id>nexus</id>
-	      <name>Landmark Technologies Releases Nexus Repository</name>
+	      <name>tesla-web-releases</name>
 	      <url>http://172.31.14.141:8181/mydaystar/repository/tesla-web-releases/</url>
 	    </repository>
 	    
 	    <snapshotRepository>
 	      <id>nexus</id>
-	      <name>Landmark Technologies Snapshot Nexus Repository </name>
+	      <name>tesla-webapp-snapshots</name>
 	      <url>http://172.31.14.141:8181/mydaystar/repository/tesla-webapp-snapshots/</url>
 	    </snapshotRepository>
 	    
