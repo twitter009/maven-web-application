@@ -1,0 +1,37 @@
+node{
+  def mavenHome = tool name: 'maven3.9.1'
+  stage('1clonecode'){
+    git"https://github.com/twitter009/maven-web-application"
+    //sh "git clone "https://github.com/twitter009/maven-web-application" Linux
+    //bat "git clone "https://github.com/twitter009/maven-web-application" Windows
+  }
+  stage('2Test&Build'){
+    sh "${mavenHome}/bin/mvn clean package"
+  }
+  stage('3CodeQuality'){
+    sh "${mavenHome}/bin/mvn sonar:sonar"
+  }
+  stage('4uploadArtfifacts'){
+    sh "${mavenHome}/bin/mvn deploy"
+  }
+  stage('5deploytoUAT'){
+    sh "echo 'Deploy to UAT'"
+    deploy adapters: [tomcat9(credentialsId: 'Tomcat-credentials', path: '', url: 'http://54.152.231.170:8177/')], contextPath: null, war: 'target/*war'
+  }
+  stage('6approvalGate'){
+     timeout(3) {
+      input message: 'Application ready for deployment, please remview and approve'
+}
+  }  
+  stage('7deploytoProd'){
+     sh "echo 'Deploy to UAT'"
+    deploy adapters: [tomcat9(credentialsId: 'Tomcat-credentials', path: '', url: 'http://54.152.231.170:8177/')], contextPath: null, war: 'target/*war'
+  }
+  stage('8EmailNotification'){
+    emailext body: '''Hi All,
+
+Check Build status.
+
+Daystar Technologies''', recipientProviders: [buildUser(), developers(), upstreamDevelopers()], subject: 'Build Status', to: 'daystarayo@gmail.com'
+  }
+}
